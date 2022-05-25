@@ -6,13 +6,21 @@
 
 from torch.utils import data
 
-from .datasets.mnist import MNIST
+from .datasets.ImagewoofDataset import ImagewoofDataset
 from .transforms import build_transforms
 
 
-def build_dataset(transforms, is_train=True):
-    datasets = MNIST(root='./', train=is_train, transform=transforms, download=True)
-    return datasets
+def build_dataset(transforms, 
+                  dataset_root, 
+                  annotation_file,
+                  is_train=True):
+    dataset = ImagewoofDataset(root=dataset_root, 
+                               anno_file=annotation_file, 
+                               transforms=transforms,  
+                               is_train=is_train)
+    
+    return dataset
+    
 
 
 def make_data_loader(cfg, is_train=True):
