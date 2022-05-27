@@ -8,6 +8,7 @@ from PIL import Image
 import PIL, PIL.ImageOps, PIL.ImageEnhance, PIL.ImageDraw
 
 from torchvision.transforms import functional as F
+from torchvision.transforms import RandAugment
 from torch.nn.functional import interpolate
 
 
@@ -29,15 +30,16 @@ class Compose:
             format_string += "    {0}".format(t)
         format_string += "\n)"
         return format_string
-    
+
+
 class Resize:
     
-    def __init__(self, size, ratio, interpolation=Image.BILINEAR) -> None:
+    def __init__(self, size, interpolation=Image.BILINEAR) -> None:
         self.img_size = size
         self.interpolation = interpolation
         
     def __call__(self, image):
-        image = image = F.resize(image, self.img_size, self.interpolation)
+        image = F.resize(image, self.img_size, self.interpolation)
         return image
     
     
@@ -52,6 +54,7 @@ class RandomHorizontalFlip:
             
         return image
 
+
 class RandomHorizontalFlip:
     
     def __init__(self, prob=0.5):
@@ -62,10 +65,11 @@ class RandomHorizontalFlip:
             image = F.vflip(image)
             
         return image
-    
+
+
 class CenterCrop:
     
-    def __init__(self, size) :
+    def __init__(self, size):
         self.size = size
         
     def __call__(self, image):
@@ -76,7 +80,8 @@ class ToTensor:
     def __call__(self, image):
         image = F.to_tensor(image)
         return image
-    
+
+
 class ToPILImage:
     
     def __init__(self, mode=None) -> None:
@@ -87,7 +92,7 @@ class ToPILImage:
         return F.to_pil_image(image, self.mode)
     
     
-class Normalize(object):
+class Normalize:
     def __init__(self, mean, std, to_bgr255=True):
         self.mean = mean
         self.std = std
@@ -98,5 +103,3 @@ class Normalize(object):
             image = image[[2, 1, 0]] * 255
         image = F.normalize(image, mean=self.mean, std=self.std)
         return image
-    
-    
