@@ -1,12 +1,6 @@
-# encoding: utf-8
-"""
-@author:  sherlock
-@contact: sherlockliao01@gmail.com
-"""
-
 from torch.utils import data
 
-from .datasets.ImagewoofDataset import ImagewoofDataset
+from .datasets.ImagewoofDataset import ImageWoofDataset
 from .transforms import build_transforms
 
 
@@ -14,13 +8,12 @@ def build_dataset(transforms,
                   dataset_root, 
                   annotation_file,
                   is_train=True):
-    dataset = ImagewoofDataset(root=dataset_root, 
+    dataset = ImageWoofDataset(root=dataset_root,
                                anno_file=annotation_file, 
                                transforms=transforms,  
                                is_train=is_train)
     
     return dataset
-    
 
 
 def make_data_loader(cfg, is_train=True):
