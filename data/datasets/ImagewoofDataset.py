@@ -5,10 +5,8 @@ import os
 import pandas as pd
 from PIL import Image
 
-class ImagewoofDataset(data.Dataset):
-    
-    """_summary_
-    """
+
+class ImageWoofDataset(data.Dataset):
 
     def __init__(self, 
                  root, 
@@ -31,7 +29,7 @@ class ImagewoofDataset(data.Dataset):
         
         image = Image.open(file_path).convert("RGB")
         
-        if self.transform is not None:
+        if self.transforms is not None:
             image = self.transforms(image)
         
         return image, label, label_1, label_5
@@ -41,8 +39,8 @@ class ImagewoofDataset(data.Dataset):
 
 
 if __name__ == "__main__":
-    test_data = ImagewoofDataset("./datasets", "noisy_imagewoof.csv", is_train=False)
+    test_data = ImageWoofDataset("./datasets", "noisy_imagewoof.csv", is_train=False)
     print(len(test_data))
-    image, _, _ , _ = test_data[150]
+    image, _, _, _ = test_data[150]
     
     image.show()
