@@ -5,7 +5,7 @@ from . import transforms as T
 def build_transforms(cfg, is_train=True):
     height = cfg.INPUT.HEIGHT
     width = cfg.INPUT.WIDTH
-    ratio = cfg.INPUT.WIDTH
+    ratio = cfg.INPUT.RATIO
 
     normalize_transform = T.Normalize(mean=cfg.INPUT.PIXEL_MEAN, std=cfg.INPUT.PIXEL_STD)
 
