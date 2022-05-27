@@ -1,4 +1,3 @@
-from sqlalchemy import false
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -26,18 +25,16 @@ class ResNeXtBottleneck(nn.Module):
         self.bn_expand = nn.BatchNorm2d(out_channels)
         
         self.shortcut = self.short_cut(stride)
-        
-    
-    
+
     def short_cut(self, stride):
-        shortcut = nn.Sequential([
-            nn.Conv2d(self.in_channels, self.out_channels, kernel_size=1, stride=stride, padding=0, bias=false),
+
+        shortcut = nn.Sequential(
+            nn.Conv2d(self.in_channels, self.out_channels, kernel_size=1, stride=stride, padding=0, bias=False),
             nn.BatchNorm2d(self.out_channels)
-        ])
+        )
         
         return shortcut
-    
-    
+
     def forward(self, input):
         bottle_neck = self.conv_reduce(input)
         bottle_neck = self.bn_reduce.forward(bottle_neck)
@@ -55,7 +52,7 @@ class ResNeXtBottleneck(nn.Module):
         return F.relu(residual + bottle_neck, inplace=True)
     
     
-class ResNeXtBlock(AbstractModel):
+class ResNeXtBlock(nn.Module):
     
     def __init__(self,
                  in_channels,
@@ -83,14 +80,12 @@ class ResNeXtBlock(AbstractModel):
                 block_list.append(ResNeXtBottleneck(in_channels, out_channels, 1, cardinality, base_width, widen_factor))
         
         self.block = nn.Sequential(*block_list)
-        
-    
+
     def forward(self, input):
         return self.block(input)
+
     
-    
-    
-class ResNeXt(AbstractModel):
+class ResNeXt(nn.Module):
     
     def __init__(self,
                  cardinality,
@@ -123,7 +118,6 @@ class ResNeXt(AbstractModel):
             self.load()
         else:
             self._init_weight()
-        
     
     def forward(self, input):
         x = self.conv_stem(input)
@@ -138,7 +132,6 @@ class ResNeXt(AbstractModel):
         x = x.view(-1, self.stages[3])
         return self.classifier(x)
     
-    
     def _init_weight(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -146,15 +139,14 @@ class ResNeXt(AbstractModel):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-                
     
     def remove_cl(state_dict):
         for key in list(state_dict.keys()):
             if key.startswith('fc.'):
                 del state_dict[key]
         return state_dict
-    
-    
+
+
 def build_resnext(cfg):
     model = ResNeXt()
     return model
