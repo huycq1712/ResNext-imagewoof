@@ -2,6 +2,7 @@ from torch.utils import data
 
 from .datasets.ImagewoofDataset import ImageWoofDataset
 from .transforms import build_transforms
+from .collate_batch import collate_fn
 
 
 def build_dataset(transforms, 
@@ -25,11 +26,12 @@ def make_data_loader(cfg, is_train=True):
         shuffle = False
 
     transforms = build_transforms(cfg, is_train)
-    datasets = build_dataset(transforms, is_train)
+    datasets = build_dataset(transforms, cfg.DATASET.ROOT, cfg.DATASET.ANNO, is_train)
 
     num_workers = cfg.DATALOADER.NUM_WORKERS
     data_loader = data.DataLoader(
-        datasets, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers
+        datasets, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, collate_fn=collate_fn
     )
 
     return data_loader
+
